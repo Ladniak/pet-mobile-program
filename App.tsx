@@ -1,10 +1,10 @@
 import { SafeAreaView } from "react-native-safe-area-context";
 import LoginPage from "./src/screen/Auth/Login";
 
-function App() {
+function App(): React.JSX.Element {
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={{ flex: 1 }}>
       <LoginPage />
     </SafeAreaView>
   );

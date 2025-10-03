@@ -1,9 +1,10 @@
-import { StyleSheet } from 'react-native';
+import { Platform, StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
   mainWrapper: {
     margin: 20,
-    marginTop: 70,
+    flex: 1,
+    justifyContent: 'center',
   },
   titleContainer: {
     gap: 4,
@@ -41,7 +42,14 @@ export default StyleSheet.create({
     borderRadius: 25,
     marginVertical: 4,
     paddingHorizontal: 24,
-    paddingVertical: 12,
+    paddingVertical: Platform.select({
+      android: 12,
+      ios: 24,
+      default: 12,
+    }),
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   input: {
     padding: 0,
