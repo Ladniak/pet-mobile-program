@@ -1,4 +1,5 @@
 import { Platform, StyleSheet } from 'react-native';
+import { fonts } from '../../../constants/fonts';
 
 export default StyleSheet.create({
   mainWrapper: {
@@ -11,7 +12,8 @@ export default StyleSheet.create({
     marginBottom: 40,
   },
   title: {
-    fontSize: 24,
+    fontSize: 40,
+    fontFamily: fonts.DancingScriptBold,
   },
   welcomeText: {
     fontSize: 14,
