@@ -2,6 +2,7 @@ import { Keyboard, KeyboardAvoidingView, Platform, ScrollView, Text, TextInput, 
 import { View } from 'react-native';
 import styles from './styles';
 import { useState } from 'react';
+import { HidePassIcon, ViewPassIcon } from '../../../assets/icons';
 
 interface IInputValue {
     email: string;
@@ -18,7 +19,7 @@ export default function LoginPage() {
         errorPassword: null,
     });
 
-    const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+    const [isPasswordVisible, setIsPasswordVisible] = useState(true);
 
     const handleChangeInput = (
         key: 'email' | 'password' | 'errorEmail' | 'errorPassword',
@@ -103,8 +104,9 @@ export default function LoginPage() {
                                 hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}
                                 onPress={() => {
                                     setIsPasswordVisible(!isPasswordVisible)
-                                }}
-                                style={{ height: 20, width: 20, backgroundColor: isPasswordVisible ? '#6c0002ff' : '#6a932d' }} />
+                                }}>
+                                {isPasswordVisible ? <HidePassIcon /> : <ViewPassIcon />}
+                            </TouchableOpacity>
                         </View>
                         {inputValues.errorPassword && <Text>{inputValues.errorPassword}</Text>}
                         <TouchableOpacity style={[styles.enterBtn, isDisabledLoginBtn && { opacity: 0.5 }]} disabled={isDisabledLoginBtn}>
