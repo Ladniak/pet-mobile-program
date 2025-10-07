@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "832149722259",
+    "project_id": "mobile-pet-program",
+    "storage_bucket": "mobile-pet-program.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:832149722259:android:241b44041d2236c2146966",
+        "android_client_info": {
+          "package_name": "com.firstprogram"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBbWDeKgB9qEoKTkMnssu5SHBYsPF87aCw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

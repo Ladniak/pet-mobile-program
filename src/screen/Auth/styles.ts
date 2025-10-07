@@ -1,5 +1,5 @@
 import { Platform, StyleSheet } from 'react-native';
-import { fonts } from '../../../constants/fonts';
+import { fonts } from '../../constants/fonts';
 
 export default StyleSheet.create({
   mainWrapper: {
@@ -26,18 +26,18 @@ export default StyleSheet.create({
     marginBottom: 40,
     borderRadius: 20,
   },
-  regBtn: {
+  disableBtn: {
     alignItems: 'center',
-    backgroundColor: '#F8F8F9',
     padding: 10,
     borderRadius: 20,
     flex: 1,
   },
-  loginBtn: {
+  activeBtn: {
     alignItems: 'center',
     padding: 10,
     borderRadius: 20,
     flex: 1,
+    backgroundColor: '#F8F8F9',
   },
   inputContainer: {
     borderWidth: 1,

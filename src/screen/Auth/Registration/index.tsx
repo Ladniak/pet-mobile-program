@@ -1,155 +1,98 @@
-import { Keyboard, KeyboardAvoidingView, Platform, ScrollView, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
 import { View } from 'react-native';
-import styles from './styles';
 import { useState } from 'react';
-import { HidePassIcon, ViewPassIcon } from '../../../assets/icons';
+import AuthHeader from '../components/AuthHeader';
+import AuthLayout from '../components/AuthLayout';
+import DefaultButton from '../../../common/components/DefaultButton';
+import Input from '../../../common/components/Input';
+import { Formik, FormikValues } from 'formik';
+import { RegistrationSchema } from '../utils/validations';
 
-interface IInputValue {
-    email: string;
-    password: string;
-    confirmPassword: string;
-    errorEmail: null | string;
-    errorPassword: null | string;
-    errorConfirmPassword: null | string;
+interface ITouched {
+    email: boolean;
+    password: boolean;
+    confirmPassword: boolean;
 }
-
-export default function LoginPage() {
-    const [inputValues, setInputValues] = useState<IInputValue>({
-        email: '',
-        password: '',
-        confirmPassword: '',
-        errorEmail: null,
-        errorPassword: null,
-        errorConfirmPassword: null
+export default function RegisterPage() {
+    const [touched, setTouched] = useState<ITouched>({
+        email: false,
+        password: false,
+        confirmPassword: false,
     });
 
-    const [isPasswordVisible, setIsPasswordVisible] = useState(true);
-
-    const handleChangeInput = (
-        key: 'email' | 'password' | 'confirmPassword' | 'errorEmail' | 'errorPassword' | 'errorConfirmPassword',
-        value: string | null) => {
-        setInputValues(prevState => ({ ...prevState, [key]: value }));
-    };
-
-    const checkEmail = () => {
-        const emailValidator = new RegExp('^([a-z0-9._%-]+@[a-z0-9.-]+.[a-z]{2,6})*$');
-        if (!emailValidator.test(inputValues.email)) {
-            handleChangeInput('errorEmail', 'Not valid email')
-        } else {
-            handleChangeInput('errorEmail', null)
-        }
-    }
-
-    const checkPassword = (text: string) => {
-        if (text.length < 8) {
-            handleChangeInput('errorPassword', 'Password must be more than 8 symbols')
-        } else {
-            handleChangeInput('errorPassword', null)
-        }
-    }
-
-    const checkConfirmPassword = (text: string) => {
-        if (inputValues.password != text) {
-            handleChangeInput('errorConfirmPassword', 'Passwords are not the same')
-        } else {
-            handleChangeInput('errorConfirmPassword', null)
-        }
-    }
-
-    const isDisabledLoginBtn = Boolean(inputValues.errorEmail ||
-        inputValues.errorPassword ||
-        inputValues.errorConfirmPassword ||
-        !inputValues.email ||
-        !inputValues.password ||
-        !inputValues.confirmPassword)
-
     return (
-        <KeyboardAvoidingView
-            style={{ flex: 1 }}
-            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-            keyboardVerticalOffset={Platform.select({ ios: 90, android: 20 })}
-        >
-            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                <ScrollView
-                    contentContainerStyle={{ flexGrow: 1 }}
-                    keyboardShouldPersistTaps="handled"
-                >
-                    <View style={styles.mainWrapper}>
-                        <View style={styles.titleContainer}>
-                            <Text style={styles.title}>Welcome</Text>
-                            <Text style={styles.welcomeText}>We help u find your own pet!</Text>
-                        </View>
-
-                        <View style={styles.buttonContainer}>
-                            <TouchableOpacity style={styles.loginBtn}>
-                                <Text>Login</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity style={styles.regBtn}>
-                                <Text>Register</Text>
-                            </TouchableOpacity>
-                        </View>
-
-                        <View style={styles.inputContainer}>
-                            <TextInput
-                                placeholder="Email"
-                                style={styles.input}
-                                placeholderTextColor="#838383"
-                                onBlur={() => {
-                                    checkEmail();
+        <AuthLayout>
+            <AuthHeader activeTab={'registration'} />
+            <Formik
+                initialValues={{
+                    email: '',
+                    password: '',
+                    confirmPassword: '',
+                }}
+                onSubmit={value => {
+                    console.log('value', value);
+                }}
+                validationSchema={RegistrationSchema()}>
+                {({
+                    values,
+                    setFieldValue,
+                    handleSubmit,
+                    isValid,
+                    errors,
+                }: FormikValues) => (
+                    <>
+                        <View>
+                            <Input
+                                onFocus={() =>
+                                    setTouched(prevState => ({ ...prevState, email: true }))
+                                }
+                                value={values.email}
+                                onChangeText={value => {
+                                    setFieldValue('email', value);
                                 }}
-                                value={inputValues.email}
-                                onChangeText={text => handleChangeInput('email', text)}
+                                placeholder={'Email'}
+                                error={touched.email && errors.email}
+                            />
+                            <Input
+                                onFocus={() =>
+                                    setTouched(prevState => ({ ...prevState, password: true }))
+                                }
+                                value={values.password}
+                                onChangeText={value => {
+                                    setFieldValue('password', value);
+                                }}
+                                placeholder={'Password'}
+                                error={touched.password && errors.password}
+                                secureTextEntry={true}
+                            />
+                            <Input
+                                onFocus={() =>
+                                    setTouched(prevState => ({
+                                        ...prevState,
+                                        confirmPassword: true,
+                                    }))
+                                }
+                                value={values.confirmPassword}
+                                onChangeText={value => {
+                                    setFieldValue('confirmPassword', value);
+                                }}
+                                placeholder={'Confirm password'}
+                                error={touched.confirmPassword && errors.confirmPassword}
+                                secureTextEntry={true}
                             />
                         </View>
-                        {inputValues.errorEmail && <Text>{inputValues.errorEmail}</Text>}
-                        <View style={styles.inputContainer}>
-                            <TextInput
-                                placeholder="Password"
-                                style={styles.input}
-                                placeholderTextColor="#838383"
-                                value={inputValues.password}
-                                onChangeText={text => {
-                                    handleChangeInput('password', text);
-                                    checkPassword(text)
-                                }}
-                                secureTextEntry={isPasswordVisible}
-                            />
-                            <TouchableOpacity
-                                hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}
-                                onPress={() => {
-                                    setIsPasswordVisible(!isPasswordVisible)
-                                }}>
-                                {isPasswordVisible ? <HidePassIcon /> : <ViewPassIcon />}
-                            </TouchableOpacity>
-                        </View>
-                        {inputValues.errorPassword && <Text>{inputValues.errorPassword}</Text>}
-                        <View style={styles.inputContainer}>
-                            <TextInput
-                                placeholder="Confirm Password"
-                                style={styles.input}
-                                placeholderTextColor="#838383"
-                                value={inputValues.confirmPassword}
-                                onChangeText={text => {
-                                    handleChangeInput('confirmPassword', text);
-                                    checkConfirmPassword(text)
-                                }}
-                                secureTextEntry={isPasswordVisible}
-                            />
-                            <TouchableOpacity
-                                hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}
-                                onPress={() => {
-                                    setIsPasswordVisible(!isPasswordVisible)
-                                }}>
-                                {isPasswordVisible ? <HidePassIcon /> : <ViewPassIcon />}
-                            </TouchableOpacity>
-                        </View>
-                        {inputValues.errorConfirmPassword && <Text>{inputValues.errorConfirmPassword}</Text>}
-                        <TouchableOpacity style={[styles.enterBtn, isDisabledLoginBtn && { opacity: 0.5 }]} disabled={isDisabledLoginBtn}>
-                            <Text style={styles.enterText}>Enter</Text>
-                        </TouchableOpacity>
-                    </View>
-                </ScrollView>
-            </TouchableWithoutFeedback>
-        </KeyboardAvoidingView >
+                        <DefaultButton
+                            disabled={
+                                !isValid ||
+                                !values.email ||
+                                !values.password ||
+                                !values.confirmPassword
+                            }
+                            onPress={handleSubmit}
+                            text={'Registration'}
+                        />
+                    </>
+                )}
+            </Formik>
+        </AuthLayout>
     );
 }
