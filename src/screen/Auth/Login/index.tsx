@@ -5,6 +5,10 @@ import AuthLayout from '../components/AuthLayout';
 import Input from '../../../common/components/Input';
 import DefaultButton from '../../../common/components/DefaultButton';
 import auth from '@react-native-firebase/auth';
+import { CommonActions, useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { RootStackNavigation } from '../../../navigation/types';
+import { ScreenNames } from '../../../constants/screenNames';
 
 interface IInputValue {
     email: string;
@@ -14,6 +18,10 @@ interface IInputValue {
 }
 
 export default function LoginPage() {
+
+    const navigation = useNavigation<StackNavigationProp<RootStackNavigation>>();
+
+
     const [inputValues, setInputValues] = useState<IInputValue>({
         email: '',
         password: '',
@@ -53,7 +61,14 @@ export default function LoginPage() {
         try {
             const result = await auth().signInWithEmailAndPassword(email, password)
             console.log(result);
-
+            if (result.user) {
+                navigation.dispatch(
+                    CommonActions.reset({
+                        index: 1,
+                        routes: [{ name: ScreenNames.LOGGED_IN_STACK }],
+                    }),
+                );
+            }
         } catch (error) {
             console.log(error);
         }

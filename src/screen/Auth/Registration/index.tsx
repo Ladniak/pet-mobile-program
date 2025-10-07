@@ -7,6 +7,10 @@ import Input from '../../../common/components/Input';
 import { Formik, FormikValues } from 'formik';
 import { RegistrationSchema } from '../utils/validations';
 import auth from '@react-native-firebase/auth';
+import { CommonActions, useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { RootStackNavigation } from '../../../navigation/types';
+import { ScreenNames } from '../../../constants/screenNames';
 
 interface ITouched {
     email: boolean;
@@ -14,6 +18,9 @@ interface ITouched {
     confirmPassword: boolean;
 }
 export default function RegisterPage() {
+
+    const navigation = useNavigation<StackNavigationProp<RootStackNavigation>>();
+
     const [touched, setTouched] = useState<ITouched>({
         email: false,
         password: false,
@@ -24,6 +31,14 @@ export default function RegisterPage() {
         try {
             const result = await auth().createUserWithEmailAndPassword(email, password)
             console.log(result);
+            if (result.user) {
+                navigation.dispatch(
+                    CommonActions.reset({
+                        index: 1,
+                        routes: [{ name: ScreenNames.LOGGED_IN_STACK }],
+                    }),
+                );
+            }
         } catch (error) {
             console.log(error);
         }
