@@ -1,11 +1,12 @@
 import { View } from 'react-native';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import AuthHeader from '../components/AuthHeader';
 import AuthLayout from '../components/AuthLayout';
 import DefaultButton from '../../../common/components/DefaultButton';
 import Input from '../../../common/components/Input';
 import { Formik, FormikValues } from 'formik';
 import { RegistrationSchema } from '../utils/validations';
+import auth from '@react-native-firebase/auth';
 
 interface ITouched {
     email: boolean;
@@ -19,6 +20,23 @@ export default function RegisterPage() {
         confirmPassword: false,
     });
 
+    const registerUser = async (email: string, password: string) => {
+        try {
+            const result = await auth().createUserWithEmailAndPassword(email, password)
+            console.log(result);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    useEffect(() => {
+        const subscriber = auth().onAuthStateChanged(user => {
+            console.log(user);
+        });
+        return subscriber;
+    }, []);
+
+
     return (
         <AuthLayout>
             <AuthHeader activeTab={'registration'} />
@@ -29,7 +47,7 @@ export default function RegisterPage() {
                     confirmPassword: '',
                 }}
                 onSubmit={value => {
-                    console.log('value', value);
+                    void registerUser(value.email, value.password);
                 }}
                 validationSchema={RegistrationSchema()}>
                 {({
